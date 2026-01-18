@@ -20,5 +20,47 @@
                 "words": ["FEEKS", "TANG", "TRUT", "KRENG"]
             }
         ]
-    }
+    },
+    {
+    "id": "Puzzel 2",
+    "name": "Puzzel 2",
+    "categories": [
+        {
+            "name": "Vrienden van Thijs",
+            "words": [
+                "THOR",
+                "DUCO",
+                "ABEL",
+                "PELLE"
+            ]
+        },
+        {
+            "name": "Leden van de familie Tamboer",
+            "words": [
+                "PETER",
+                "EMILY",
+                "TESSIE",
+                "VICTOR"
+            ]
+        },
+        {
+            "name": "Vrienden van Sophie",
+            "words": [
+                "ANNA",
+                "ELIZABETH",
+                "NIENKE",
+                "MEIKE"
+            ]
+        },
+        {
+            "name": "Steeds een letter erbij",
+            "words": [
+                "EL",
+                "FEL",
+                "LIEF",
+                "FILET"
+            ]
+        }
+    ]
+}
 ]

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Exacto Cuatro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #a0a0a0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            color: #1a1a1a;
+        }
+
+        /* ===== MENU SCREEN ===== */
+        .menu-screen {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+        }
+
+        .menu-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-subtitle {
+            font-size: 1rem;
+            color: #4a4a4a;
+            margin-bottom: 40px;
+        }
+
+        .puzzle-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .puzzle-item {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .puzzle-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .puzzle-item:active {
+            transform: scale(0.98);
+        }
+
+        .puzzle-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .puzzle-number {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .puzzle-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .puzzle-status {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark {
+            color: #22c55e;
+            font-size: 1.5rem;
+        }
+
+        /* ===== GAME SCREEN ===== */
+        .game-screen {
+            width: 100%;
+            max-width: 500px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .game-title-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .game-puzzle-name {
+            font-size: 0.95rem;
+            color: #4a4a4a;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: background 0.15s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        /* Message area */
+        .message-area {
+            width: 100%;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .message {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .message.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        /* Game board */
+        .game-board {
+            width: 100%;
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .solved-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .solved-category {
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .solved-category-title {
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .solved-category-words {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Category colors */
+        .category-0 { background: #d4a5a5; color: #7c2d2d; }
+        .category-1 { background: #b8a5c7; color: #4a2d5c; }
+        .category-2 { background: #d4c9a5; color: #5c4a2d; }
+        .category-3 { background: #a5c4d4; color: #2d4a5c; }
+
+        /* Tiles grid */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .tile {
+            aspect-ratio: 1;
+            background: #c0c0c0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 6px;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.15s ease;
+            user-select: none;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .tile:hover {
+            background: #b0b0b0;
+        }
+
+        .tile.selected {
+            background: #3a3a3a;
+            color: white;
+        }
+
+        .tile.shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* Lives indicator */
+        .lives-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .lives-label {
+            font-size: 0.9rem;
+            color: #4a4a4a;
+            margin-bottom: 8px;
+        }
+
+        .lives-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .life-dot {
+            width: 24px;
+            height: 10px;
+            background: #3a3a3a;
+            border-radius: 5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .life-dot.lost {
+            opacity: 0.25;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            border: 2px solid #3a3a3a;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-btn.primary {
+            background: #3a3a3a;
+            color: white;
+            border-color: #3a3a3a;
+        }
+
+        .action-btn.primary:hover:not(:disabled) {
+            background: #2a2a2a;
+        }
+
+        .confirm-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== END MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            background: #c9a227;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-header.lost {
+            background: #6b7280;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+        }
+
+        .modal-body {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .modal-stats {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-stat-main {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-results {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .modal-result-row {
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            background: #1a1a1a;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .modal-btn:hover {
+            background: #333;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .tile {
+                font-size: 0.65rem;
+            }
+            
+            .action-btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- MENU SCREEN -->
+    <div class="menu-screen" id="menuScreen">
+        <h1 class="menu-title">Exacto Cuatro</h1>
+        <p class="menu-subtitle">Vind de vier woorden die bij elkaar horen</p>
+        <div class="puzzle-list" id="puzzleList">
+            <!-- Puzzles will be inserted here -->
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div class="game-screen" id="gameScreen">
+        <div class="game-header">
+            <div class="game-title-section">
+                <div class="game-title">Exacto Cuatro</div>
+                <div class="game-puzzle-name" id="gamePuzzleName">Puzzel 1</div>
+            </div>
+            <button class="back-button" id="backButton" aria-label="Terug naar menu">
+                ←
+            </button>
+        </div>
+
+        <div class="message-area">
+            <div class="message" id="message"></div>
+        </div>
+
+        <div class="game-board">
+            <div class="solved-categories" id="solvedCategories"></div>
+            <div class="tiles-grid" id="tilesGrid"></div>
+        </div>
+
+        <div class="lives-section">
+            <div class="lives-label">Pogingen resterend</div>
+            <div class="lives-dots" id="livesDots"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn" id="shuffleBtn">
+                <span>↻</span> Schudden
+            </button>
+            <button class="action-btn" id="clearBtn" disabled>
+                <span>🗑</span> Wissen
+            </button>
+            <button class="action-btn primary confirm-btn" id="confirmBtn" disabled>
+                Bevestig
+            </button>
+        </div>
+    </div>
+
+    <!-- END MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header" id="modalHeader">
+                <div class="modal-icon" id="modalIcon">🧩</div>
+            </div>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalTitle">Goed gedaan!</h2>
+                <div class="modal-stats" id="modalStats">
+                    <div class="modal-stat-main" id="modalStatMain"></div>
+                </div>
+                <div class="modal-results" id="modalResults"></div>
+                <button class="modal-btn" id="modalBtn">Terug naar menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GAME STATE =====
+        let currentPuzzle = null;
+        let selectedTiles = [];
+        let solvedCategories = [];
+        let remainingWords = [];
+        let lives = 6;
+        let guessHistory = []; // Track previous guesses
+
+        // ===== PUZZLE DATA =====
+        let puzzles = [];
+
+        // ===== DOM ELEMENTS =====
+        const menuScreen = document.getElementById('menuScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const puzzleList = document.getElementById('puzzleList');
+        const gamePuzzleName = document.getElementById('gamePuzzleName');
+        const backButton = document.getElementById('backButton');
+        const messageEl = document.getElementById('message');
+        const solvedCategoriesEl = document.getElementById('solvedCategories');
+        const tilesGrid = document.getElementById('tilesGrid');
+        const livesDots = document.getElementById('livesDots');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalHeader = document.getElementById('modalHeader');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalStatMain = document.getElementById('modalStatMain');
+        const modalResults = document.getElementById('modalResults');
+        const modalBtn = document.getElementById('modalBtn');
+
+        // ===== LOAD PUZZLES =====
+        async function loadPuzzles() {
+            try {
+                const response = await fetch('puzzels.json');
+                puzzles = await response.json();
+                renderMenu();
+            } catch (error) {
+                console.error('Could not load puzzles:', error);
+                puzzleList.innerHTML = '<p style="text-align:center;color:#666;">Geen puzzels gevonden. Voeg puzzels toe via het beheerderspaneel.</p>';
+            }
+        }
+
+        // ===== LOCAL STORAGE =====
+        function getProgress() {
+            const saved = localStorage.getItem('exactoCuatroProgress');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveProgress(puzzleId, completed) {
+            const progress = getProgress();
+            progress[puzzleId] = { completed, timestamp: Date.now() };
+            localStorage.setItem('exactoCuatroProgress', JSON.stringify(progress));
+        }
+
+        function isPuzzleCompleted(puzzleId) {
+            const progress = getProgress();
+            return progress[puzzleId]?.completed || false;
+        }
+
+        // ===== RENDER MENU =====
+        function renderMenu() {
+            puzzleList.innerHTML = '';
+            puzzles.forEach((puzzle, index) => {
+                const completed = isPuzzleCompleted(puzzle.id);
+                const item = document.createElement('div');
+                item.className = 'puzzle-item';
+                item.innerHTML = `
+                    <div class="puzzle-info">
+                        <div class="puzzle-number">${index + 1}</div>
+                        <div class="puzzle-name">${puzzle.name || `Puzzel ${index + 1}`}</div>
+                    </div>
+                    <div class="puzzle-status">
+                        ${completed ? '<span class="checkmark">✓</span>' : ''}
+                    </div>
+                `;
+                item.addEventListener('click', () => startGame(index));
+                puzzleList.appendChild(item);
+            });
+        }
+
+        // ===== START GAME =====
+        function startGame(puzzleIndex) {
+            currentPuzzle = puzzles[puzzleIndex];
+            gamePuzzleName.textContent = currentPuzzle.name || `Puzzel ${puzzleIndex + 1}`;
+            
+            // Reset game state
+            selectedTiles = [];
+            solvedCategories = [];
+            lives = 6;
+            guessHistory = [];
+            
+            // Get all words
+            remainingWords = [];
+            currentPuzzle.categories.forEach((cat, catIndex) => {
+                cat.words.forEach(word => {
+                    remainingWords.push({ word, categoryIndex: catIndex });
+                });
+            });
+            
+            // Shuffle words
+            shuffleArray(remainingWords);
+            
+            // Show game screen
+            menuScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            
+            // Render
+            renderGame();
+            hideMessage();
+        }
+
+        // ===== RENDER GAME =====
+        function renderGame() {
+            renderSolvedCategories();
+            renderTiles();
+            renderLives();
+            updateButtons();
+        }
+
+        function renderSolvedCategories() {
+            solvedCategoriesEl.innerHTML = '';
+            solvedCategories.forEach(catIndex => {
+                const cat = currentPuzzle.categories[catIndex];
+                const div = document.createElement('div');
+                div.className = `solved-category category-${catIndex}`;
+                div.innerHTML = `
+                    <div class="solved-category-title">${cat.name}</div>
+                    <div class="solved-category-words">${cat.words.join(', ')}</div>
+                `;
+                solvedCategoriesEl.appendChild(div);
+            });
+        }
+
+        function renderTiles() {
+            tilesGrid.innerHTML = '';
+            remainingWords.forEach((item, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                if (selectedTiles.includes(index)) {
+                    tile.classList.add('selected');
+                }
+                tile.textContent = item.word;
+                tile.addEventListener('click', () => toggleTile(index));
+                tilesGrid.appendChild(tile);
+            });
+        }
+
+        function renderLives() {
+            livesDots.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'life-dot';
+                if (i >= lives) {
+                    dot.classList.add('lost');
+                }
+                livesDots.appendChild(dot);
+            }
+        }
+
+        function updateButtons() {
+            clearBtn.disabled = selectedTiles.length === 0;
+            confirmBtn.disabled = selectedTiles.length !== 4;
+        }
+
+        // ===== TILE INTERACTION =====
+        function toggleTile(index) {
+            if (selectedTiles.includes(index)) {
+                selectedTiles = selectedTiles.filter(i => i !== index);
+            } else if (selectedTiles.length < 4) {
+                selectedTiles.push(index);
+            }
+            renderTiles();
+            updateButtons();
+        }
+
+        // ===== MESSAGES =====
+        function showMessage(text, type = 'error') {
+            messageEl.textContent = text;
+            messageEl.className = `message ${type} show`;
+        }
+
+        function hideMessage() {
+            messageEl.classList.remove('show');
+        }
+
+        // ===== GAME ACTIONS =====
+        function shuffleTiles() {
+            shuffleArray(remainingWords);
+            selectedTiles = [];
+            renderTiles();
+            updateButtons();
+        }
+
+        function clearSelection() {
+            selectedTiles = [];
+            renderTiles();
+            updateButtons();
+        }
+
+        function confirmGuess() {
+            if (selectedTiles.length !== 4) return;
+
+            // Get selected words
+            const selectedWords = selectedTiles.map(i => remainingWords[i]);
+            const selectedWordStrings = selectedWords.map(w => w.word).sort().join(',');
+
+            // Check if this exact guess was already made
+            if (guessHistory.includes(selectedWordStrings)) {
+                showMessage('Deze combinatie heb je al geprobeerd!', 'warning');
+                return;
+            }
+            guessHistory.push(selectedWordStrings);
+
+            // Check categories
+            const categoryCount = {};
+            selectedWords.forEach(item => {
+                categoryCount[item.categoryIndex] = (categoryCount[item.categoryIndex] || 0) + 1;
+            });
+
+            // Find if any category has 4 matches
+            const correctCategory = Object.entries(categoryCount).find(([cat, count]) => count === 4);
+            
+            if (correctCategory) {
+                // Correct!
+                const catIndex = parseInt(correctCategory[0]);
+                solvedCategories.push(catIndex);
+                
+                // Remove solved words
+                remainingWords = remainingWords.filter(item => item.categoryIndex !== catIndex);
+                selectedTiles = [];
+                
+                hideMessage();
+                renderGame();
+
+                // Check win condition
+                if (solvedCategories.length === 4) {
+                    setTimeout(() => showEndModal(true), 600);
+                }
+            } else {
+                // Wrong guess
+                lives--;
+                
+                // Check for 3 out of 4
+                const threeCorrect = Object.entries(categoryCount).find(([cat, count]) => count === 3);
+                if (threeCorrect) {
+                    showMessage('3 van de 4 goed!', 'warning');
+                } else {
+                    showMessage('Helaas, dat klopt niet.', 'error');
+                }
+
+                // Shake animation
+                const tiles = tilesGrid.querySelectorAll('.tile');
+                selectedTiles.forEach(i => {
+                    tiles[i].classList.add('shake');
+                });
+                setTimeout(() => {
+                    tiles.forEach(t => t.classList.remove('shake'));
+                }, 500);
+
+                selectedTiles = [];
+                renderTiles();
+                renderLives();
+                updateButtons();
+
+                // Check lose condition
+                if (lives === 0) {
+                    setTimeout(() => showEndModal(false), 800);
+                }
+            }
+        }
+
+        // ===== END MODAL =====
+        function showEndModal(won) {
+            if (won) {
+                modalHeader.classList.remove('lost');
+                modalIcon.textContent = '🧩';
+                modalTitle.textContent = 'Goed gedaan!';
+                modalStatMain.textContent = `Gelukt in ${6 - lives === 0 ? '0 fouten' : `${6 - lives} ${6 - lives === 1 ? 'fout' : 'fouten'}`}!`;
+                saveProgress(currentPuzzle.id, true);
+            } else {
+                modalHeader.classList.add('lost');
+                modalIcon.textContent = '😔';
+                modalTitle.textContent = 'Helaas!';
+                modalStatMain.textContent = 'Je hebt geen pogingen meer over.';
+            }
+
+            // Show all categories
+            modalResults.innerHTML = '';
+            currentPuzzle.categories.forEach((cat, index) => {
+                const row = document.createElement('div');
+                row.className = `modal-result-row category-${index}`;
+                row.textContent = cat.name;
+                modalResults.appendChild(row);
+            });
+
+            modalOverlay.classList.add('show');
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('show');
+            showMenu();
+        }
+
+        function showMenu() {
+            gameScreen.style.display = 'none';
+            menuScreen.style.display = 'flex';
+            renderMenu();
+        }
+
+        // ===== UTILITY =====
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        backButton.addEventListener('click', showMenu);
+        shuffleBtn.addEventListener('click', shuffleTiles);
+        clearBtn.addEventListener('click', clearSelection);
+        confirmBtn.addEventListener('click', confirmGuess);
+        modalBtn.addEventListener('click', closeModal);
+
+        // ===== INIT =====
+        loadPuzzles();
+    </script>
+</body>
+</html>

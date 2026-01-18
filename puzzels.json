@@ -1,0 +1,24 @@
+[
+    {
+        "id": "puzzel-1",
+        "name": "Puzzel 1",
+        "categories": [
+            {
+                "name": "Mensen die Kees heten",
+                "words": ["HULST", "MOMMA", "VAN KOOTEN", "PRINS"]
+            },
+            {
+                "name": "Sprookjesfiguren",
+                "words": ["DRAAK", "HEKS", "PRINSES", "FEE"]
+            },
+            {
+                "name": "Marokkaanse steden zonder de eerste letter",
+                "words": ["GADIR", "ABAT", "ANGIER", "EKNES"]
+            },
+            {
+                "name": "Andere woorden voor 'rotwijf'",
+                "words": ["FEEKS", "TANG", "TRUT", "KRENG"]
+            }
+        ]
+    }
+]

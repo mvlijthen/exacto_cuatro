@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exacto Cuatro - Beheer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #1a1a2e;
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        /* Password screen */
+        .password-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        .password-box {
+            background: #252542;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .password-box h2 {
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 2px solid #3a3a5c;
+            background: #1a1a2e;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .password-error {
+            color: #ef4444;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .password-error.show {
+            display: block;
+        }
+
+        /* Admin panel */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.show {
+            display: block;
+        }
+
+        .section {
+            background: #252542;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .number {
+            width: 28px;
+            height: 28px;
+            background: #6366f1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 2px solid #3a3a5c;
+            background: #1a1a2e;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        input[type="text"]::placeholder {
+            color: #555;
+        }
+
+        .category-section {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid;
+        }
+
+        .category-section:nth-child(1) { border-left-color: #d4a5a5; }
+        .category-section:nth-child(2) { border-left-color: #b8a5c7; }
+        .category-section:nth-child(3) { border-left-color: #d4c9a5; }
+        .category-section:nth-child(4) { border-left-color: #a5c4d4; }
+
+        .category-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .words-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .words-grid input {
+            margin-bottom: 0;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5558e3;
+        }
+
+        .btn-secondary {
+            background: #3a3a5c;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a4a6c;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Output section */
+        .output-section {
+            display: none;
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        .output-box {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #3a3a5c;
+            margin-bottom: 16px;
+        }
+
+        .copy-success {
+            color: #22c55e;
+            font-weight: 500;
+            margin-left: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-success.show {
+            opacity: 1;
+        }
+
+        .instructions {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .instructions h3 {
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #aaa;
+            line-height: 1.8;
+        }
+
+        .instructions code {
+            background: #3a3a5c;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+        }
+
+        /* Preview */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .preview-tile {
+            aspect-ratio: 1;
+            background: #c0c0c0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.65rem;
+            color: #1a1a1a;
+            text-align: center;
+            padding: 4px;
+            word-break: break-word;
+        }
+
+        .preview-container {
+            background: #a0a0a0;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .words-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Exacto Cuatro</h1>
+        <p class="subtitle">Beheerderspaneel</p>
+
+        <!-- Password Screen -->
+        <div class="password-screen" id="passwordScreen">
+            <div class="password-box">
+                <h2>Voer wachtwoord in</h2>
+                <input type="password" class="password-input" id="passwordInput" placeholder="Wachtwoord">
+                <div class="password-error" id="passwordError">Onjuist wachtwoord</div>
+                <button class="btn btn-primary" id="passwordBtn" style="width: 100%;">Inloggen</button>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            
+            <!-- Puzzle Info -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="number">1</span>
+                    Puzzel informatie
+                </div>
+                <label>Puzzel ID (uniek, zonder spaties)</label>
+                <input type="text" id="puzzleId" placeholder="bijv: puzzel-2">
+                <label>Puzzel naam (wordt getoond in menu)</label>
+                <input type="text" id="puzzleName" placeholder="bijv: Sophie's verjaardag">
+            </div>
+
+            <!-- Categories -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="number">2</span>
+                    Categorieën en woorden
+                </div>
+                
+                <div id="categoriesContainer">
+                    <!-- Category 1 -->
+                    <div class="category-section">
+                        <div class="category-title">Categorie 1 (rood/roze)</div>
+                        <label>Naam categorie</label>
+                        <input type="text" class="cat-name" placeholder="bijv: Soorten kaas">
+                        <label>Vier woorden</label>
+                        <div class="words-grid">
+                            <input type="text" class="cat-word" placeholder="Woord 1">
+                            <input type="text" class="cat-word" placeholder="Woord 2">
+                            <input type="text" class="cat-word" placeholder="Woord 3">
+                            <input type="text" class="cat-word" placeholder="Woord 4">
+                        </div>
+                    </div>
+
+                    <!-- Category 2 -->
+                    <div class="category-section">
+                        <div class="category-title">Categorie 2 (paars)</div>
+                        <label>Naam categorie</label>
+                        <input type="text" class="cat-name" placeholder="bijv: Hoofdsteden">
+                        <label>Vier woorden</label>
+                        <div class="words-grid">
+                            <input type="text" class="cat-word" placeholder="Woord 1">
+                            <input type="text" class="cat-word" placeholder="Woord 2">
+                            <input type="text" class="cat-word" placeholder="Woord 3">
+                            <input type="text" class="cat-word" placeholder="Woord 4">
+                        </div>
+                    </div>
+
+                    <!-- Category 3 -->
+                    <div class="category-section">
+                        <div class="category-title">Categorie 3 (geel/oker)</div>
+                        <label>Naam categorie</label>
+                        <input type="text" class="cat-name" placeholder="bijv: Bekende Nederlanders">
+                        <label>Vier woorden</label>
+                        <div class="words-grid">
+                            <input type="text" class="cat-word" placeholder="Woord 1">
+                            <input type="text" class="cat-word" placeholder="Woord 2">
+                            <input type="text" class="cat-word" placeholder="Woord 3">
+                            <input type="text" class="cat-word" placeholder="Woord 4">
+                        </div>
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div class="category-section">
+                        <div class="category-title">Categorie 4 (blauw)</div>
+                        <label>Naam categorie</label>
+                        <input type="text" class="cat-name" placeholder="bijv: Dingen in de keuken">
+                        <label>Vier woorden</label>
+                        <div class="words-grid">
+                            <input type="text" class="cat-word" placeholder="Woord 1">
+                            <input type="text" class="cat-word" placeholder="Woord 2">
+                            <input type="text" class="cat-word" placeholder="Woord 3">
+                            <input type="text" class="cat-word" placeholder="Woord 4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="number">3</span>
+                    Voorbeeld
+                </div>
+                <p style="color: #888; margin-bottom: 16px;">Zo ziet de puzzel eruit (willekeurige volgorde):</p>
+                <div class="preview-container">
+                    <div class="preview-grid" id="previewGrid"></div>
+                </div>
+                <div class="button-row" style="margin-top: 16px;">
+                    <button class="btn btn-secondary" id="previewBtn">Vernieuw voorbeeld</button>
+                </div>
+            </div>
+
+            <!-- Generate -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="number">4</span>
+                    Genereer code
+                </div>
+                <div class="button-row">
+                    <button class="btn btn-primary" id="generateBtn">Genereer JSON</button>
+                    <button class="btn btn-secondary" id="clearFormBtn">Formulier wissen</button>
+                </div>
+                
+                <div class="output-section" id="outputSection">
+                    <h3 style="margin: 24px 0 12px; color: #fff;">Gegenereerde puzzel:</h3>
+                    <div class="output-box" id="outputBox"></div>
+                    <div class="button-row">
+                        <button class="btn btn-primary" id="copyBtn">📋 Kopieer naar klembord</button>
+                        <span class="copy-success" id="copySuccess">✓ Gekopieerd!</span>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h3>Hoe voeg je deze puzzel toe?</h3>
+                        <ol>
+                            <li>Open <code>puzzels.json</code> in je GitHub repository</li>
+                            <li>Voeg een komma toe na de laatste <code>}</code> (voor de <code>]</code>)</li>
+                            <li>Plak de gegenereerde code erboven</li>
+                            <li>Commit en push de wijzigingen</li>
+                            <li>De puzzel is nu speelbaar!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIG =====
+        const ADMIN_PASSWORD = 'sophie2024'; // Wijzig dit naar je eigen wachtwoord!
+
+        // ===== DOM ELEMENTS =====
+        const passwordScreen = document.getElementById('passwordScreen');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordBtn = document.getElementById('passwordBtn');
+        const passwordError = document.getElementById('passwordError');
+        const adminPanel = document.getElementById('adminPanel');
+        const previewGrid = document.getElementById('previewGrid');
+        const previewBtn = document.getElementById('previewBtn');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
+        const outputSection = document.getElementById('outputSection');
+        const outputBox = document.getElementById('outputBox');
+        const copyBtn = document.getElementById('copyBtn');
+        const copySuccess = document.getElementById('copySuccess');
+
+        // ===== PASSWORD =====
+        function checkPassword() {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                passwordScreen.style.display = 'none';
+                adminPanel.classList.add('show');
+                localStorage.setItem('exactoCuatroAdmin', 'true');
+            } else {
+                passwordError.classList.add('show');
+                passwordInput.value = '';
+            }
+        }
+
+        passwordBtn.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('exactoCuatroAdmin') === 'true') {
+            passwordScreen.style.display = 'none';
+            adminPanel.classList.add('show');
+        }
+
+        // ===== GET FORM DATA =====
+        function getFormData() {
+            const puzzleId = document.getElementById('puzzleId').value.trim();
+            const puzzleName = document.getElementById('puzzleName').value.trim();
+            
+            const categories = [];
+            const categorySections = document.querySelectorAll('.category-section');
+            
+            categorySections.forEach(section => {
+                const name = section.querySelector('.cat-name').value.trim();
+                const wordInputs = section.querySelectorAll('.cat-word');
+                const words = Array.from(wordInputs).map(input => input.value.trim().toUpperCase());
+                categories.push({ name, words });
+            });
+
+            return { puzzleId, puzzleName, categories };
+        }
+
+        // ===== PREVIEW =====
+        function updatePreview() {
+            const data = getFormData();
+            const allWords = [];
+            
+            data.categories.forEach(cat => {
+                cat.words.forEach(word => {
+                    if (word) allWords.push(word);
+                });
+            });
+
+            // Shuffle
+            for (let i = allWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
+            }
+
+            // Fill with placeholders if needed
+            while (allWords.length < 16) {
+                allWords.push('...');
+            }
+
+            previewGrid.innerHTML = '';
+            allWords.slice(0, 16).forEach(word => {
+                const tile = document.createElement('div');
+                tile.className = 'preview-tile';
+                tile.textContent = word || '...';
+                previewGrid.appendChild(tile);
+            });
+        }
+
+        previewBtn.addEventListener('click', updatePreview);
+
+        // Update preview on input
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+
+        // Initial preview
+        updatePreview();
+
+        // ===== GENERATE JSON =====
+        function generateJSON() {
+            const data = getFormData();
+
+            // Validation
+            if (!data.puzzleId) {
+                alert('Vul een puzzel ID in');
+                return;
+            }
+
+            const puzzle = {
+                id: data.puzzleId,
+                name: data.puzzleName || `Puzzel`,
+                categories: data.categories.map(cat => ({
+                    name: cat.name || 'Naamloze categorie',
+                    words: cat.words.filter(w => w).length === 4 ? cat.words : cat.words.concat(Array(4 - cat.words.filter(w => w).length).fill('WOORD'))
+                }))
+            };
+
+            const json = JSON.stringify(puzzle, null, 4);
+            outputBox.textContent = json;
+            outputSection.classList.add('show');
+        }
+
+        generateBtn.addEventListener('click', generateJSON);
+
+        // ===== COPY =====
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(outputBox.textContent).then(() => {
+                copySuccess.classList.add('show');
+                setTimeout(() => copySuccess.classList.remove('show'), 2000);
+            });
+        });
+
+        // ===== CLEAR FORM =====
+        clearFormBtn.addEventListener('click', () => {
+            if (confirm('Weet je zeker dat je het formulier wilt wissen?')) {
+                document.querySelectorAll('input[type="text"]').forEach(input => {
+                    input.value = '';
+                });
+                outputSection.classList.remove('show');
+                updatePreview();
+            }
+        });
+    </script>
+</body>
+</html>
